@@ -1,0 +1,649 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ ui.title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            --bg: #020617;
+            --bg-elevated: #020617;
+            --panel: #020617;
+            --accent: #22c55e;
+            --accent-soft: rgba(34,197,94,0.15);
+            --border-subtle: #1f2937;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --text-soft: #6b7280;
+            --chip-bg: #111827;
+            --chip-border: #1f2937;
+            --chip-active-bg: #16a34a;
+            --chip-active-border: #22c55e;
+            --chip-active-text: #ecfdf5;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #0f172a 0, #020617 45%, #020617 100%);
+            color: var(--text-main);
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .page-wrap {
+            min-height: 100vh;
+            padding: 20px 24px 32px;
+        }
+
+        .shell {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .title-block h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 0.03em;
+        }
+
+        .title-block p {
+            margin: 3px 0 0;
+            font-size: 12px;
+            color: var(--text-soft);
+        }
+
+        .lang-select {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .lang-select select {
+            background: #020617;
+            color: var(--text-main);
+            border-radius: 999px;
+            padding: 4px 10px;
+            border: 1px solid var(--border-subtle);
+            font-size: 12px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+            gap: 18px;
+            margin-top: 8px;
+        }
+
+        .panel {
+            background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(15,23,42,0.96));
+            border-radius: 14px;
+            border: 1px solid rgba(31,41,55,0.9);
+            box-shadow: 0 18px 60px rgba(0,0,0,0.65);
+            padding: 12px;
+        }
+
+        .panel-left-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .panel-left-header h2 {
+            margin: 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-soft);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .field-label {
+            font-size: 11px;
+            color: var(--text-soft);
+            margin-bottom: 3px;
+        }
+
+        .select-shell {
+            position: relative;
+        }
+
+        .select-shell select {
+            width: 100%;
+            background: #020617;
+            border-radius: 999px;
+            border: 1px solid var(--border-subtle);
+            padding: 5px 28px 5px 28px;
+            font-size: 12px;
+            color: var(--text-main);
+            appearance: none;
+            outline: none;
+        }
+
+        .select-shell .select-flag {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 10px;
+            border-radius: 2px;
+            object-fit: cover;
+        }
+
+        .select-shell .chevron {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: var(--text-soft);
+            pointer-events: none;
+        }
+
+        .tank-list {
+            margin-top: 6px;
+            max-height: 420px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .tank-card {
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+            padding: 6px 8px;
+            border-radius: 9px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: background 0.14s ease, border-color 0.14s ease, transform 0.06s ease;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .tank-card:hover {
+            background: rgba(15,23,42,0.9);
+            border-color: rgba(55,65,81,0.9);
+            transform: translateY(-0.5px);
+        }
+
+        .tank-card.active {
+            background: var(--accent-soft);
+            border-color: var(--accent);
+        }
+
+        .tank-main {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .tank-name {
+            font-size: 12px;
+        }
+
+        .tank-meta {
+            font-size: 11px;
+            color: var(--text-soft);
+        }
+
+        .tank-role {
+            font-size: 11px;
+            color: var(--accent);
+            white-space: nowrap;
+            margin-left: 4px;
+        }
+
+        .tank-flags {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nation-flag-inline {
+            width: 16px;
+            height: 10px;
+            border-radius: 2px;
+            object-fit: cover;
+        }
+
+        .build-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .build-title-block {
+            min-width: 0;
+        }
+
+        .build-title {
+            margin: 0;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .build-sub {
+            margin: 2px 0 0;
+            font-size: 11px;
+            color: var(--text-soft);
+        }
+
+        .tag-chip {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(55,65,81,0.9);
+            background: rgba(15,23,42,0.9);
+            color: var(--text-muted);
+        }
+
+        .build-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 0.65fr) minmax(0, 0.35fr);
+            gap: 10px;
+        }
+
+        .build-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-soft);
+            margin-bottom: 4px;
+        }
+
+        .build-box {
+            background: rgba(15,23,42,0.85);
+            border-radius: 10px;
+            border: 1px solid rgba(31,41,55,0.9);
+            padding: 8px 9px;
+            font-size: 12px;
+        }
+
+        .build-list {
+            list-style: disc;
+            padding-left: 16px;
+            margin: 0;
+        }
+
+        .build-list li {
+            margin-bottom: 2px;
+        }
+
+        .crew-list {
+            list-style: decimal;
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        .crew-list li {
+            margin-bottom: 2px;
+        }
+
+        .notes-text {
+            font-size: 12px;
+            color: var(--text-main);
+        }
+
+        .ability-box {
+            margin-top: 8px;
+            background: radial-gradient(circle at left, rgba(52,211,153,0.16), transparent 55%);
+            border-radius: 10px;
+            border: 1px solid rgba(34,197,94,0.35);
+            padding: 7px 9px;
+            font-size: 12px;
+        }
+
+        .ability-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--accent);
+            margin-bottom: 3px;
+        }
+
+        .ability-text {
+            font-size: 12px;
+            color: var(--text-main);
+        }
+
+        .placeholder-text {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .footer {
+            margin-top: 10px;
+            font-size: 11px;
+            color: var(--text-soft);
+            text-align: left;
+        }
+
+        /* 🔹 Исправленный баннер поддержки — по центру, не перекрывает язык */
+        .support-banner {
+            width: 100%;
+            text-align: center;
+            margin: 4px 0 16px 0;
+            position: static;
+            background: #020617;
+            border-radius: 999px;
+            padding: 8px 14px;
+            border: 1px solid rgba(34,197,94,0.4);
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            font-size: 1.15rem;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+
+        .support-banner span {
+            color: var(--text-soft);
+        }
+
+        .support-banner a {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        /* P.S. текст под оборудованием */
+        .ps-note {
+            margin-top: 6px;
+            font-size: 13px; /* не слишком мелко и не крупно */
+            color: var(--text-soft);
+            font-style: italic;
+            line-height: 1.35;
+        }
+
+        @media (max-width: 960px) {
+            .main-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .support-banner {
+                position: static;
+                margin-bottom: 10px;
+                justify-content: center;
+            }
+        }
+
+    </style>
+
+    <script>
+        function onFilterChange() {
+            const form = document.getElementById('filters-form');
+            if (form) {
+                form.submit();
+            }
+        }
+
+        function onTankClick(tankId) {
+            const form = document.getElementById('filters-form');
+            if (!form) return;
+            const input = document.getElementById('tank-id-input');
+            if (!input) return;
+            input.value = tankId;
+            form.submit();
+        }
+    </script>
+</head>
+<body>
+<div class="page-wrap">
+    <div class="shell">
+
+        <div class="support-banner">
+            <span>{{ ui.support }}</span>
+            <!-- ВСТАВЬ СВОЮ ССЫЛКУ НА ДОНАТ В href -->
+            <a href="https://wotbuildpicker.donatik.ua" target="_blank" rel="noopener">
+                https://wotbuildpicker.donatik.ua
+            </a>
+        </div>
+
+        <div class="header-row">
+            <div class="title-block">
+                <h1>{{ ui.title }}</h1>
+                <p>{{ ui.subtitle }}</p>
+            </div>
+            <form method="get" id="lang-form">
+                <div class="lang-select">
+                    <span>{{ ui.label_lang }}:</span>
+                    <select name="lang" onchange="document.getElementById('lang-form').submit()">
+                        {% for code in langs %}
+                            <option value="{{ code }}" {% if code == lang %}selected{% endif %}>{{ code|upper }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" name="nation" value="{{ selected_nation }}">
+                    <input type="hidden" name="tank_class" value="{{ selected_class }}">
+                    <input type="hidden" name="tier" value="{{ selected_tier }}">
+                    {% if selected_tank_id %}
+                        <input type="hidden" name="tank_id" value="{{ selected_tank_id }}">
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+
+        <div class="main-grid">
+
+            <!-- ЛЕВАЯ ПАНЕЛЬ: фильтры + список танков -->
+            <div class="panel">
+                <div class="panel-left-header">
+                    <h2>ФІЛЬТРИ</h2>
+                </div>
+
+                <form id="filters-form" method="get">
+                    <input type="hidden" name="lang" value="{{ lang }}">
+                    <input type="hidden" name="tank_id" id="tank-id-input" value="{{ selected_tank_id|default_if_none:'' }}">
+                    <div class="filters-grid">
+                        <div>
+                            <div class="field-label">{{ ui.label_nation }}</div>
+                            <div class="select-shell">
+                                {% if selected_nation != "all" %}
+                                    {% for n in nation_list %}
+                                        {% if n.code == selected_nation and n.flag %}
+                                            <img src="{% static n.flag %}" class="select-flag" alt="">
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                <select name="nation" onchange="onFilterChange()">
+                                    {% for n in nation_list %}
+                                        <option value="{{ n.code }}" {% if n.code == selected_nation %}selected{% endif %}>
+                                            {{ n.label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <span class="chevron">▼</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="field-label">{{ ui.label_class }}</div>
+                            <div class="select-shell">
+                                <select name="tank_class" onchange="onFilterChange()">
+                                    {% for c in class_list %}
+                                        <option value="{{ c.code }}" {% if c.code == selected_class %}selected{% endif %}>
+                                            {{ c.label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <span class="chevron">▼</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="field-label">{{ ui.label_tier }}</div>
+                            <div class="select-shell">
+                                <select name="tier" onchange="onFilterChange()">
+                                    <option value="all" {% if selected_tier == "all" %}selected{% endif %}>
+                                        —
+                                    </option>
+                                    {% for t in tiers %}
+                                        <option value="{{ t }}" {% if selected_tier|stringformat:"s" == t|stringformat:"s" %}selected{% endif %}>
+                                            {{ t }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <span class="chevron">▼</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="tank-list">
+                    {% for t in tanks %}
+                        <div class="tank-card {% if selected_tank_id and selected_tank_id|stringformat:'s' == t.id|stringformat:'s' %}active{% endif %}"
+                             onclick="onTankClick('{{ t.id }}')">
+                            <div class="tank-main">
+                                <div class="tank-name">
+                                    {{ t.name }}
+                                </div>
+                                <div class="tank-meta">
+                                    {{ t.tier }} lvl · {{ t.tank_class }}
+                                    {% if t.role %}
+                                        <span class="tank-role">· {{ t.role }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="tank-flags">
+                                {% for n in nation_list %}
+                                    {% if n.code == t.nation and n.flag %}
+                                        <img src="{% static n.flag %}" class="nation-flag-inline" alt="">
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="placeholder-text">
+                            {{ ui.no_tanks|default:"Немає танків за цим фільтром" }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- ПРАВАЯ ПАНЕЛЬ: сборка / описание -->
+            <div class="panel">
+                {% if selected_tank and build %}
+                    <div class="build-header">
+                        <div class="build-title-block">
+                            <h2 class="build-title">
+                                {{ selected_tank.name }}
+                                {% if selected_tank.tier %}
+                                    <span class="tag-chip">Tier {{ selected_tank.tier }}</span>
+                                {% endif %}
+                            </h2>
+                            <p class="build-sub">
+                                {{ ui.role_label }}:
+                                {% if selected_tank.role %}
+                                    {{ selected_tank.role }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </p>
+                        </div>
+                        {% if selected_tank.image_path %}
+                            <img src="{% static selected_tank.image_path %}" alt="{{ selected_tank.name }}"
+                                 style="width: 120px; height: 68px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(31,41,55,0.9);">
+                        {% endif %}
+                    </div>
+
+                    <div class="build-layout">
+                        <div>
+                            <div class="build-section-title">{{ ui.equipment }}</div>
+                            <div class="build-box">
+                                <ul class="build-list">
+                                    {% for item in build.equipment %}
+                                        <li>{{ item }}</li>
+                                    {% endfor %}
+                                </ul>
+                                <!-- P.S. текст про оборудование -->
+                                <p class="ps-note">
+                                    * Если данное оборудование не доступно для этого танка, например у ПТ-САУ стабилизатор
+                                    называется по-другому, то используйте аналог оборудования. Если данный танк барабанный
+                                    СТ, то вместо досылателя используйте вентиляцию. Если выбранный танк барабанный ТТ,
+                                    то используйте стабилизатор, турбонагнетатель и закалку.
+                                </p>
+                            </div>
+
+                            <div style="height: 8px;"></div>
+
+                            <div class="build-section-title">{{ ui.consumables }}</div>
+                            <div class="build-box">
+                                <ul class="build-list">
+                                    {% for item in build.consumables %}
+                                        <li>{{ item }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="build-section-title">{{ ui.crew_skills }}</div>
+                            <div class="build-box">
+                                <ol class="crew-list">
+                                    {% for perk in build.crew_skills %}
+                                        <li>{{ perk }}</li>
+                                    {% endfor %}
+                                </ol>
+                            </div>
+
+                            <div style="height: 8px;"></div>
+
+                            <div class="build-section-title">{{ ui.how_to_play }}</div>
+                            <div class="build-box">
+                                <p class="notes-text">
+                                    {{ build.notes }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if selected_tank.ability_text %}
+                        <div class="ability-box">
+                            <div class="ability-title">{{ ui.ability_label }}</div>
+                            <div class="ability-text">
+                                {{ selected_tank.ability_text }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                {% else %}
+                    <div class="placeholder-text">
+                        Обери танк зліва, щоб побачити рекомендоване обладнання, спорядження, вміння екіпажу та стиль гри.
+                    </div>
+                {% endif %}
+
+                <div class="footer">
+                    {{ ui.footer }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
