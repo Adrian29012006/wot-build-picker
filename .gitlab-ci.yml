@@ -1,11 +1,27 @@
 image: python:3.11
 
+stages:
+  - deploy
+
 pages:
   stage: deploy
   script:
-    - mkdir public
-    - cp -r picker/templates/picker/* public/
-    - cp -r picker/static/picker public/static
+    # Устанавливаем зависимости
+    - pip install -r requirements.txt
+
+    # Собираем статику Django (сюда попадут css/js/картинки)
+    - python manage.py collectstatic --noinput
+
+    # Готовим папку public для GitLab Pages
+    - mkdir -p public
+
+    # Копируем статику
+    - cp -r static/* public/ || true
+    - cp -r picker/static/* public/ || true
+
+    # Кладём шаблон как index.html
+    - cp picker/templates/picker/index.html public/index.html
+
   artifacts:
     paths:
       - public
