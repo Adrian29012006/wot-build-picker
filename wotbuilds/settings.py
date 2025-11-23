@@ -19,8 +19,20 @@ ALLOWED_HOSTS = [
     "wot-build-picker-production.up.railway.app",
 ]
 
-STATIC_URL = '/static/'
+# Static files (CSS, JS, images)
+STATIC_URL = "/static/"
+
+# Куда collectstatic будет складывать файлы на сервере
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Где лежат твои исходные статики (картинки танков, флаги и т.д.)
+STATICFILES_DIRS = [
+    BASE_DIR / "picker" / "static",
+]
+
+# Whitenoise будет отдавать статику на проде
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
@@ -70,6 +82,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ⚡ добавили
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -77,6 +90,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'wotbuilds.urls'
 
