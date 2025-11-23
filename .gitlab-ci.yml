@@ -1,0 +1,13 @@
+image: python:3.11
+
+pages:
+  stage: deploy
+  script:
+    - mkdir public
+    - cp -r picker/templates/picker/* public/
+    - cp -r picker/static/picker public/static
+  artifacts:
+    paths:
+      - public
+  only:
+    - deploy
