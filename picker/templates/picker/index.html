@@ -32,27 +32,87 @@
 
 
     {# Остальной твой CSS остаётся как есть #}
-    <style>
-        :root {
-            --bg: #020617;
-            --bg-elevated: #020617;
-            --panel: #020617;
-            --accent: #22c55e;
-            --accent-soft: rgba(34, 197, 94, 0.15);
-            --border-subtle: #1f2937;
-            --text-main: #e5e7eb;
-            --text-muted: #9ca3af;
-            --text-soft: #6b7280;
-            --chip-bg: #111827;
-            --chip-border: #1f2937;
-            --chip-active-bg: #16a34a;
-            --chip-active-border: #22c55e;
-            --chip-active-text: #ecfdf5;
-        }
+  <style>
+    :root {
+        --bg: #0d1117; /* чёрно-синий фон */
+        --bg-elevated: #161b22;
+        --panel: #161b22;
+        --accent: #25c55e; /* зелёный акцент как раньше */
+        --accent-soft: rgba(37, 197, 94, 0.15);
 
-        * {
-            box-sizing: border-box;
-        }
+        --text-main: #e6edf3;  /* основной текст */
+        --text-muted: #8b949e; /* серый */
+        --text-soft: #c9d1d9;  /* чуть светлее */
+
+        --border-subtle: #30363d;
+
+        --chip-bg: #21262d;
+        --chip-border: #30363d;
+        --chip-active-bg: #2ea043;
+        --chip-active-text: #ffffff;
+        --chip-active-border: #238636;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg);
+        color: var(--text-main);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4 {
+        color: #ffffff;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .panel {
+        background: var(--panel);
+        border: 1px solid var(--border-subtle);
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.45);
+    }
+
+    .tank-item {
+        color: var(--text-main);
+        font-size: 15px;
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: var(--chip-bg);
+        border: 1px solid var(--chip-border);
+    }
+
+    .tank-item:hover {
+        background: #1d2733;
+        cursor: pointer;
+    }
+
+    .tank-active {
+        background: var(--chip-active-bg) !important;
+        border-color: var(--chip-active-border) !important;
+        color: var(--chip-active-text) !important;
+    }
+
+    .filter-label {
+        color: var(--text-soft);
+        font-size: 14px;
+        margin-bottom: 3px;
+    }
+
+    .stats-block {
+        background: var(--panel);
+        border: 1px solid var(--border-subtle);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+</style>
 
         body {
             margin: 0;
