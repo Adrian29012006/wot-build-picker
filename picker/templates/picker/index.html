@@ -3,6 +3,76 @@
 <html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
+    <title>WoT Build Picker – сборки танков World of Tanks / підбір зборок танків</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {# === Основное SEO-описание (на трёх языках сразу) === #}
+    <meta name="description"
+          content="WoT Build Picker — онлайн-сервис для подбора сборок танков World of Tanks: оборудование, снаряжение, перки экипажа. Працює українською, російською та англійською мовами.">
+
+    {# Ключевые слова на EN / RU / UA, чтобы тебя находили и по русским/укр запросам #}
+    <meta name="keywords"
+          content="WoT Build Picker, wot build picker, сборки танков, билды танков, лучший билд, World of Tanks, Ворлд оф Танкс, підбір обладнання, спорядження танків, збірки танків, онлайн калькулятор билдов">
+
+    <meta name="robots" content="index,follow">
+
+    {# Канонический адрес страницы #}
+    <link rel="canonical" href="https://wot-build-picker-production.up.railway.app/">
+
+    {# Альтернативные языковые версии для поисковиков #}
+    <link rel="alternate" href="https://wot-build-picker-production.up.railway.app/?lang=en" hreflang="en">
+    <link rel="alternate" href="https://wot-build-picker-production.up.railway.app/?lang=uk" hreflang="uk">
+    <link rel="alternate" href="https://wot-build-picker-production.up.railway.app/?lang=ru" hreflang="ru">
+    <link rel="alternate" href="https://wot-build-picker-production.up.railway.app/" hreflang="x-default">
+
+    {# Open Graph для превью в соцсетях #}
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wot-build-picker-production.up.railway.app/">
+    <meta property="og:title" content="WoT Build Picker – подбор лучших сборок танков World of Tanks">
+    <meta property="og:description"
+          content="Выбирай танк и моментально получай готовую сборку: оборудование, снаряжение и перки экипажа. Зручний калькулятор зборок для WoT.">
+    <meta property="og:image" content="https://wot-build-picker-production.up.railway.app/static/picker/og-image.png">
+
+    {# Twitter-карточка (если кто-то шарит в X/Twitter) #}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="WoT Build Picker – сборки танков World of Tanks">
+    <meta name="twitter:description"
+          content="Удобный сервис для подбора билдов танков: оборудование, снаряжение, перки экипажа.">
+
+    {# Фавиконка сайта #}
+    <link rel="icon" type="image/svg+xml" href="{% static 'picker/favicon.svg' %}">
+    <link rel="shortcut icon" href="{% static 'picker/favicon.svg' %}">
+
+    {# Остальной твой CSS остаётся как есть #}
+    <style>
+        :root {
+            --bg: #020617;
+            --bg-elevated: #020617;
+            --panel: #020617;
+            --accent: #22c55e;
+            --accent-soft: rgba(34, 197, 94, 0.15);
+            --border-subtle: #1f2937;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --text-soft: #6b7280;
+            --chip-bg: #111827;
+            --chip-border: #1f2937;
+            --chip-active-bg: #16a34a;
+            --chip-active-border: #22c55e;
+            --chip-active-text: #ecfdf5;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            /* дальше оставляешь всё, что у тебя уже было */
+
+<head>
+    <meta charset="UTF-8">
     <title>{{ ui.title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
