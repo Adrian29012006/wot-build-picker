@@ -14,12 +14,9 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 ALLOWED_HOSTS = [
+    "*",
     "wot-build-picker-production.up.railway.app",
-    ".railway.app",
-    "localhost",
-    "127.0.0.1"
 ]
-
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
