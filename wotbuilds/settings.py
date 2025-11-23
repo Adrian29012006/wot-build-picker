@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+ALLOWED_HOSTS = ["*", ".railway.app"]
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 
 
