@@ -36,6 +36,22 @@ SECRET_KEY = 'django-insecure-%jwuyy@p0(&y!wrxlu8lsvg90vqviel)#wuoogfybh64(cl554
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "wot-build-picker-production.up.railway.app",
+]
+
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 
