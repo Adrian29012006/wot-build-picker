@@ -12,7 +12,7 @@ UI_TEXT = {
         "title": "WoT Build Picker",
         "subtitle": "Pick a tank and get a ready build: equipment, consumables, crew skills and how to play.",
         "label_tank": "Tank",
-        "label_lang": "Language",
+        "label_lang": "Language/Мова",
         "label_nation": "Nation",
         "label_class": "Class",
         "label_tier": "Tier",
@@ -25,12 +25,14 @@ UI_TEXT = {
         "how_to_play": "How to play",
         "support": "Support the author with a coffee:",
         "ability_label": "Special ability",
+        "equipment_note": "* If this recommended equipment is not available for this tank (for example, tank destroyers may have differently named stabilizers), use the closest analogue. If the tank is a drum/autoloader medium tank, use ventilation instead of a gun rammer. If the tank is a drum/autoloader heavy tank, use stabilizer, turbocharger and improved hardening.",
+
     },
     "ru": {
         "title": "WoT Build Picker",
         "subtitle": "Выбери танк и получи готовую сборку: оборудование, расходники, перки и стиль игры.",
         "label_tank": "Танк",
-        "label_lang": "Язык",
+        "label_lang": "Язык/Language",
         "label_nation": "Нация",
         "label_class": "Класс",
         "label_tier": "Уровень",
@@ -43,12 +45,14 @@ UI_TEXT = {
         "how_to_play": "Как играть",
         "support": "Поддержать автора чашкой кофе:",
         "ability_label": "Особое умение",
+        "equipment_note": "* Если данное оборудование не доступно для этого танка, например у ПТ-САУ стабилизатор называется по-другому, то используйте аналог оборудования. Если данный танк барабанный СТ, то вместо досылателя используйте вентиляцию. Если выбранный танк барабанный ТТ, то используйте стабилизатор, турбонагнетатель и закалку.",
+
     },
     "uk": {
         "title": "WoT Build Picker",
         "subtitle": "Обери танк і отримаєш готову збірку: обладнання, спорядження, вміння екіпажу та стиль гри.",
         "label_tank": "Танк",
-        "label_lang": "Мова",
+        "label_lang": "Мова/Language",
         "label_nation": "Нація",
         "label_class": "Клас",
         "label_tier": "Рівень",
@@ -61,6 +65,8 @@ UI_TEXT = {
         "how_to_play": "Як грати",
         "support": "Підтримати автора чашкою кави:",
         "ability_label": "Особлива здатність",
+        "equipment_note": "* Якщо це рекомендоване обладнання недоступне для цього танка (наприклад, у ПТ-САУ стабілізатор може називатися інакше), використовуйте найближчий аналог. Якщо танк є барабанною СТ, замість досилача використовуйте вентиляцію. Якщо танк є барабанним ТТ, використовуйте стабілізатор, турбонагнітач і покращену закалку.",
+
     },
 }
 
