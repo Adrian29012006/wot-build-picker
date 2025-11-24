@@ -43,6 +43,51 @@
 
     {# Остальной твой CSS остаётся как есть #}
   <style>
+      .donate-box {
+    margin: 20px auto;
+    padding: 20px;
+    text-align: center;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    max-width: 420px;
+}
+
+.donate-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #ffd700;
+}
+
+.donate-sub {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 15px;
+}
+
+.donate-links {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.donate-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    color: white;
+}
+
+.donate-btn.paypal {
+    background: #0070ba;
+}
+
+.donate-btn.da {
+    background: #ff6a00;
+}
+
     :root {
         --bg: #0d1117; /* чёрно-синий фон */
         --bg-elevated: #161b22;
@@ -544,13 +589,28 @@
 <div class="page-wrap">
     <div class="shell">
 
-        <div class="support-banner">
-            <span>{{ ui.support }}</span>
-            <!-- ВСТАВЬ СВОЮ ССЫЛКУ НА ДОНАТ В href -->
-            <a href="https://wotbuildpicker.donatik.ua" target="_blank" rel="noopener">
-                https://wotbuildpicker.donatik.ua
-            </a>
-        </div>
+     <div class="donate-box">
+    <h2 class="donate-title">★ Support the Author / Підтримати автора ★</h2>
+    <p class="donate-sub">
+        If you enjoy this tool, you can support further development:
+        <br>
+        Якщо вам подобається цей інструмент — можете підтримати розвиток:
+    </p>
+
+    <div class="donate-links">
+        <!-- PayPal -->
+        <a href="adrianpro4444444@gmail.com" target="_blank" class="donate-btn paypal">
+            PayPal
+        </a>
+
+        <!-- DonationAlerts -->
+        <a href="https://wotbuildpicker.donatik.ua" target="_blank" class="donate-btn da">
+            Donation Alerts
+        </a>
+    </div>
+</div>
+
+
 
         <div class="header-row">
             <div class="title-block">
