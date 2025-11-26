@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from pathlib import Path
+from django.shortcuts import render, get_object_or_404
 import json
 
 # ===== ЯЗЫКИ =====
@@ -428,6 +429,7 @@ def get_lang(request):
 
 
 def get_role_code_for_tank(spec):
+
     """
     Определяем код роли:
       1) overrides_by_id из JSON
@@ -440,6 +442,74 @@ def get_role_code_for_tank(spec):
 
     names = spec.get("names", {}) or {}
     name_en = names.get("en") or next(iter(names.values()), None)
+    # --- ШТУРМОВЫЕ ПТ-САУ (твои кастомные настройки) ---
+    assault_td_names = {
+        "T30",
+        "T30 FL",
+        "T95",
+        "TL-7",
+        "TS-60",
+        "T28",
+        "T28 Prototype",
+        "TS-5",
+        "XM57",
+        "XM66F",
+
+        "AMX AC mle. 46",
+        "AMX AC mle. 48",
+        "AMX AC mle. 48 FL",
+        "AMX 50 Foch",
+
+        "SDP 60 Gonkiewicza",
+        "SDP 58 Kilana",
+        "SDP wz 66 Grom",
+        "SDP 57 Gowika",
+        "SDP 44 Burza",
+
+        "WZ-111G FT",
+        "WZ-120G FT",
+        "WZ-111-1G FT",
+        "WZ-120-1G FT",
+        "WZ-120-1G FT FL",
+        "T-34-2G FT",
+        "WZ-131G FT",
+
+        "Ho-Ri 1",
+        "Ho-Ri 2",
+        "Type 5 Ka-Ri",
+        "Chi-To SP",
+        "Type 95 Ji-Ro",
+
+        "Tortoise",
+        "AT 15",
+        "GSOR 1008",
+        "Turtle Mk. I",
+        "AT 15A",
+        "AT 7",
+        "AT 8",
+
+        "K-91-PT",
+        "Object 263",
+        "Object 704",
+        "ISU-122-2",
+        "ISU-130",
+        "ISU-152",
+        "ISU-152K",
+        "KV-4 KTTS",
+        "SU-101",
+        "T-103",
+        "ISU-122S",
+        "SU-100M1",
+        "SU-122-44",
+        "SU-152",
+        "SU-100",
+        "SU-100Y",
+    }
+
+    # Если танк — ПТ и находится в кастомном списке штурмовых
+    if tank_class == "TD" and name_en in assault_td_names:
+        return "td_assault"
+
 
     # 1) явные overrides из JSON
     if name_en and name_en in OVERRIDES_BY_ID:
@@ -680,3 +750,43 @@ def index(request):
     }
 
     return render(request, "picker/index.html", context)
+from .models import Map
+
+
+from django.shortcuts import render
+from .models import Map
+
+
+def maps_list(request):
+    # Язык интерфейса: ru / en / uk
+    lang = request.GET.get('lang', 'ru')
+
+    layout = request.GET.get('layout')   # open / city / mixed
+    size = request.GET.get('size')       # 800 / 1000
+
+    maps_qs = Map.objects.all().order_by('name_ru')
+
+    if layout in ['open', 'city', 'mixed']:
+        maps_qs = maps_qs.filter(layout_type=layout)
+
+    if size in ['800', '1000']:
+        try:
+            maps_qs = maps_qs.filter(size_m=int(size))
+        except ValueError:
+            pass
+
+    context = {
+        'maps': maps_qs,
+        'selected_layout': layout,
+        'selected_size': size,
+        'lang': lang,
+    }
+    return render(request, "maps/maps_list.html", context)
+
+
+def map_detail(request, slug):
+    map_obj = get_object_or_404(Map, slug=slug)
+    context = {
+        'map': map_obj,
+    }
+    return render(request, 'maps/map_detail.html', context)
