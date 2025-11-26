@@ -1,0 +1,590 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+:root {
+    --bg: #050814;
+    --bg-elevated: rgba(15, 23, 42, 0.95);
+    --accent: #22c55e;
+    --accent-soft: rgba(34, 197, 94, 0.12);
+    --accent-strong: #16a34a;
+    --text-main: #e5e7eb;
+    --text-muted: #9ca3af;
+    --border-subtle: rgba(148, 163, 184, 0.25);
+    --card-radius: 18px;
+    --transition-fast: 160ms ease-out;
+}
+
+body {
+    background: radial-gradient(circle at top, #0b1220 0, #020617 40%, #000 100%);
+}
+
+.maps-page {
+    min-height: calc(100vh - 80px);
+    padding: 32px min(6vw, 72px) 56px;
+    color: var(--text-main);
+}
+
+.maps-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    align-items: flex-end;
+    margin-bottom: 24px;
+}
+
+.maps-title-block h1 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    margin: 0;
+}
+
+.maps-title-block p {
+    margin: 8px 0 0;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.maps-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+/* Языки */
+
+.lang-switch {
+    display: inline-flex;
+    gap: 8px;
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: 999px;
+    padding: 4px;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.lang-switch a {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.lang-switch a.is-active {
+    background: var(--accent);
+    color: #020617;
+    font-weight: 600;
+}
+
+.lang-switch a:hover:not(.is-active) {
+    background: rgba(148, 163, 184, 0.2);
+    color: #e5e7eb;
+}
+
+/* Назад */
+
+.back-link {
+    font-size: 13px;
+    text-decoration: none;
+    color: var(--accent);
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.back-link span.icon {
+    font-size: 14px;
+}
+
+.back-link:hover {
+    color: var(--accent-strong);
+}
+
+/* Фильтры */
+
+.filters-card {
+    background: rgba(15, 23, 42, 0.9);
+    border-radius: var(--card-radius);
+    border: 1px solid var(--border-subtle);
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    align-items: center;
+    backdrop-filter: blur(24px);
+    box-shadow:
+      0 18px 40px rgba(15, 23, 42, 0.85),
+      0 0 0 1px rgba(15, 23, 42, 0.7);
+}
+
+.filters-title {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-right: 8px;
+}
+
+.filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    flex: 1;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 160px;
+}
+
+.filter-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+}
+
+.filter-select {
+    background: #020617;
+    color: var(--text-main);
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.7);
+    padding: 6px 14px;
+    font-size: 13px;
+    outline: none;
+    min-width: 150px;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--accent) 50%),
+                      linear-gradient(135deg, var(--accent) 50%, transparent 50%);
+    background-position: calc(100% - 14px) 50%, calc(100% - 10px) 50%;
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+}
+
+.filter-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.5);
+}
+
+.filters-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-apply {
+    border-radius: 999px;
+    border: none;
+    padding: 7px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    background: var(--accent);
+    color: #020617;
+    font-weight: 600;
+    transition: background var(--transition-fast), transform var(--transition-fast),
+                box-shadow var(--transition-fast);
+    box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.7),
+                0 10px 25px rgba(22, 163, 74, 0.45);
+}
+
+.btn-apply:hover {
+    background: var(--accent-strong);
+    transform: translateY(-1px);
+}
+
+.btn-reset {
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.7);
+    padding: 6px 14px;
+    font-size: 12px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.btn-reset:hover {
+    background: rgba(31, 41, 55, 0.9);
+    color: #e5e7eb;
+    border-color: rgba(148, 163, 184, 1);
+}
+
+/* Сетка и карточки */
+
+.maps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px;
+}
+
+.map-card {
+    background: radial-gradient(circle at top left, rgba(34, 197, 94, 0.11), transparent 55%),
+                rgba(15, 23, 42, 0.98);
+    border-radius: var(--card-radius);
+    border: 1px solid rgba(31, 41, 55, 0.9);
+    padding: 10px 10px 14px;
+    box-shadow:
+      0 18px 40px rgba(15, 23, 42, 0.85),
+      0 0 0 1px rgba(15, 23, 42, 0.7);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+    transition:
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast),
+      border-color var(--transition-fast),
+      background var(--transition-fast);
+}
+
+.map-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 22px 50px rgba(15, 23, 42, 0.95),
+      0 0 0 1px rgba(34, 197, 94, 0.4);
+    border-color: rgba(34, 197, 94, 0.7);
+}
+
+.map-image-wrap {
+    border-radius: calc(var(--card-radius) - 4px);
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: #020617;
+}
+
+.map-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.02);
+    transition: transform 200ms ease-out;
+}
+
+.map-card:hover .map-image-wrap img {
+    transform: scale(1.06);
+}
+
+.map-title-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: center;
+}
+
+.map-name {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.map-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid rgba(34, 197, 94, 0.5);
+    white-space: nowrap;
+}
+
+.map-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.map-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.tag-pill {
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(55, 65, 81, 0.9);
+    color: var(--text-muted);
+}
+
+.map-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+
+.btn-more {
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.7);
+    background: rgba(15, 23, 42, 0.95);
+    color: var(--text-main);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn-more:hover {
+    background: rgba(17, 24, 39, 1);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.btn-more span.icon {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .maps-page {
+        padding-inline: 16px;
+    }
+    .maps-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .maps-actions {
+        align-items: flex-start;
+    }
+}
+</style>
+
+
+<div class="maps-page">
+
+    <div class="maps-header">
+        <div class="maps-title-block">
+            <h1>
+                {% if lang == 'uk' %}
+                    Карти та тактики
+                {% elif lang == 'en' %}
+                    Maps & tactics
+                {% else %}
+                    Карты и тактики
+                {% endif %}
+            </h1>
+            <p>
+                {% if lang == 'uk' %}
+                    Обери карту, відфільтруй за типом і розміром та переглянь рекомендовану тактику гри.
+                {% elif lang == 'en' %}
+                    Choose a map, filter by type and size and see recommended playstyle and tactics.
+                {% else %}
+                    Выбери карту, отфильтруй по типу и размеру и посмотри рекомендуемый стиль игры и тактики.
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="maps-actions">
+            <a href="{% url 'index' %}" class="back-link">
+                <span class="icon">←</span>
+                {% if lang == 'uk' %}
+                    Назад на головну
+                {% elif lang == 'en' %}
+                    Back to main page
+                {% else %}
+                    Назад на главную
+                {% endif %}
+            </a>
+
+            <div class="lang-switch">
+                <a href="?lang=ru{% if selected_layout %}&layout={{ selected_layout }}{% endif %}{% if selected_size %}&size={{ selected_size }}{% endif %}"
+                   class="{% if lang == 'ru' %}is-active{% endif %}">RU</a>
+                <a href="?lang=uk{% if selected_layout %}&layout={{ selected_layout }}{% endif %}{% if selected_size %}&size={{ selected_size }}{% endif %}"
+                   class="{% if lang == 'uk' %}is-active{% endif %}">UA</a>
+                <a href="?lang=en{% if selected_layout %}&layout={{ selected_layout }}{% endif %}{% if selected_size %}&size={{ selected_size }}{% endif %}"
+                   class="{% if lang == 'en' %}is-active{% endif %}">EN</a>
+            </div>
+        </div>
+    </div>
+
+    <form method="get" class="filters-card">
+        <span class="filters-title">
+            {% if lang == 'uk' %}Фільтр:{% elif lang == 'en' %}Filter:{% else %}Фильтр:{% endif %}
+        </span>
+
+        <div class="filters-row">
+
+            <div class="filter-group">
+                <span class="filter-label">
+                    {% if lang == 'uk' %}Тип карти{% elif lang == 'en' %}Map type{% else %}Тип карты{% endif %}
+                </span>
+                <select name="layout" class="filter-select">
+                    <option value="">
+                        {% if lang == 'uk' %}Всі{% elif lang == 'en' %}All{% else %}Все{% endif %}
+                    </option>
+                    <option value="open"  {% if selected_layout == 'open' %}selected{% endif %}>
+                        {% if lang == 'uk' %}Відкрита{% elif lang == 'en' %}Open{% else %}Открытая{% endif %}
+                    </option>
+                    <option value="city"  {% if selected_layout == 'city' %}selected{% endif %}>
+                        {% if lang == 'uk' %}Міська{% elif lang == 'en' %}City{% else %}Городская{% endif %}
+                    </option>
+                    <option value="mixed" {% if selected_layout == 'mixed' %}selected{% endif %}>
+                        {% if lang == 'uk' %}Змішана{% elif lang == 'en' %}Mixed{% else %}Смешанная{% endif %}
+                    </option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <span class="filter-label">
+                    {% if lang == 'uk' %}Розмір{% elif lang == 'en' %}Size{% else %}Размер{% endif %}
+                </span>
+                <select name="size" class="filter-select">
+                    <option value="">
+                        {% if lang == 'uk' %}Всі{% elif lang == 'en' %}All{% else %}Все{% endif %}
+                    </option>
+                    <option value="800"  {% if selected_size == '800' %}selected{% endif %}>800</option>
+                    <option value="1000" {% if selected_size == '1000' %}selected{% endif %}>1000</option>
+                </select>
+            </div>
+
+            <input type="hidden" name="lang" value="{{ lang }}">
+
+            <div class="filters-buttons">
+                <button type="submit" class="btn-apply">
+                    {% if lang == 'uk' %}Застосувати{% elif lang == 'en' %}Apply{% else %}Применить{% endif %}
+                </button>
+                <a href="{% url 'maps_list' %}?lang={{ lang }}" class="btn-reset">
+                    <span class="icon">⟳</span>
+                    {% if lang == 'uk' %}Скинути{% elif lang == 'en' %}Reset{% else %}Сбросить{% endif %}
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <div class="maps-grid">
+        {% for map in maps %}
+            <article class="map-card">
+                <div class="map-image-wrap">
+                    <img src="{% static 'maps/' %}{{ map.slug }}.png"
+                         alt="{% if lang == 'ru' %}{{ map.name_ru }}{% elif lang == 'uk' %}{{ map.name_uk|default:map.name_ru }}{% elif lang == 'en' %}{{ map.name_en|default:map.name_ru }}{% else %}{{ map.name_ru }}{% endif %}">
+                </div>
+
+                <div class="map-title-row">
+                    <div class="map-name">
+                        {% if lang == 'ru' %}
+                            {{ map.name_ru }}
+                        {% elif lang == 'uk' %}
+                            {{ map.name_uk|default:map.name_ru }}
+                        {% elif lang == 'en' %}
+                            {{ map.name_en|default:map.name_ru }}
+                        {% else %}
+                            {{ map.name_ru }}
+                        {% endif %}
+                    </div>
+                    <div class="map-badge">
+                        {% if map.layout_type == 'open' %}
+                            {% if lang == 'uk' %}Відкрита{% elif lang == 'en' %}Open{% else %}Открытая{% endif %}
+                        {% endif %}
+                        {% if map.layout_type == 'city' %}
+                            {% if lang == 'uk' %}Міська{% elif lang == 'en' %}City{% else %}Городская{% endif %}
+                        {% endif %}
+                        {% if map.layout_type == 'mixed' %}
+                            {% if lang == 'uk' %}Змішана{% elif lang == 'en' %}Mixed{% else %}Смешанная{% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="map-meta">
+                    <span>
+                        {% if map.size_m %}
+                            {% if lang == 'uk' %}
+                                {{ map.size_m }} м
+                            {% elif lang == 'en' %}
+                                {{ map.size_m }} m
+                            {% else %}
+                                {{ map.size_m }} м
+                            {% endif %}
+                        {% else %}
+                            {% if lang == 'uk' %}Розмір невідомий{% elif lang == 'en' %}Size unknown{% else %}Размер неизвестен{% endif %}
+                        {% endif %}
+                    </span>
+                    <span>
+                        {% if map.wg_type == 'summer' %}
+                            {% if lang == 'uk' %}Літня{% elif lang == 'en' %}Summer{% else %}Летняя{% endif %}
+                        {% endif %}
+                        {% if map.wg_type == 'winter' %}
+                            {% if lang == 'uk' %}Зимова{% elif lang == 'en' %}Winter{% else %}Зимняя{% endif %}
+                        {% endif %}
+                        {% if map.wg_type == 'desert' %}
+                            {% if lang == 'uk' %}Піщана{% elif lang == 'en' %}Desert{% else %}Пустынная{% endif %}
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="map-tags">
+                    {% if map.wg_type == 'summer' %}
+                        <span class="tag-pill">
+                            {% if lang == 'uk' %}Кущі / поля{% elif lang == 'en' %}Bushes / fields{% else %}Кусты / поля{% endif %}
+                        </span>
+                    {% elif map.wg_type == 'winter' %}
+                        <span class="tag-pill">
+                            {% if lang == 'uk' %}Сніг / відкриті простріли{% elif lang == 'en' %}Snow / open lines of fire{% else %}Снег / открытые прострелы{% endif %}
+                        </span>
+                    {% elif map.wg_type == 'desert' %}
+                        <span class="tag-pill">
+                            {% if lang == 'uk' %}Пісок / дюни{% elif lang == 'en' %}Sand / dunes{% else %}Песок / дюны{% endif %}
+                        </span>
+                    {% endif %}
+
+                    {% if map.layout_type == 'open' %}
+                        <span class="tag-pill">
+                            {% if lang == 'uk' %}ЛТ / СТ позиційна{% elif lang == 'en' %}LT / MT positional{% else %}ЛТ / СТ позиционная{% endif %}
+                        </span>
+                    {% elif map.layout_type == 'city' %}
+                        <span class="tag-pill">
+                            {% if lang == 'uk' %}ТТ / ближній бій{% elif lang == 'en' %}HT / close combat{% else %}ТТ / ближний бой{% endif %}
+                        </span>
+                    {% elif map.layout_type == 'mixed' %}
+                        <span class="tag-pill">
+                            {% if lang == 'uk' %}Універсальна карта{% elif lang == 'en' %}Universal map{% else %}Универсальная карта{% endif %}
+                        </span>
+                    {% endif %}
+                </div>
+
+                <div class="map-footer">
+                    <a href="{% url 'map_detail' map.slug %}?lang={{ lang }}" class="btn-more">
+                        <span>
+                            {% if lang == 'uk' %}Детальніше{% elif lang == 'en' %}Details{% else %}Подробнее{% endif %}
+                        </span>
+                        <span class="icon">→</span>
+                    </a>
+                </div>
+            </article>
+        {% empty %}
+            <p style="color: var(--text-muted); font-size: 14px;">
+                {% if lang == 'uk' %}
+                    За обраними фільтрами карти не знайдені. Змініть параметри.
+                {% elif lang == 'en' %}
+                    No maps found for selected filters. Try changing parameters.
+                {% else %}
+                    По выбранным фильтрам карты не найдены. Попробуйте изменить параметры.
+                {% endif %}
+            </p>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

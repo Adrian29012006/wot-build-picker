@@ -28,7 +28,9 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # Где лежат твои исходные статики (картинки танков, флаги и т.д.)
 STATICFILES_DIRS = [
     BASE_DIR / "picker" / "static",
+    BASE_DIR / "static",
 ]
+
 
 # Whitenoise будет отдавать статику на проде
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

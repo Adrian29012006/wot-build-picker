@@ -2,6 +2,22 @@
 <!DOCTYPE html>
 <html lang="{{ lang }}">
 <head>
+    <style>
+    .btn-green {
+        display: inline-block;
+        padding: 8px 14px;
+        background: #22c55e;
+        color: #ffffff;
+        border-radius: 6px;
+        font-size: 14px;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .btn-green:hover {
+        background: #16a34a;
+    }
+</style>
+
     <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZRZNYSGH3"></script>
 <script>
@@ -643,6 +659,12 @@
                 <div class="panel-left-header">
                     <h2>ФІЛЬТРИ</h2>
                 </div>
+<div style="margin: 10px 0;">
+    <a href="/maps/" class="btn-green">
+        Карти і тактики (тактика гри на картах)
+    </a>
+</div>
+
 
                 <form id="filters-form" method="get">
                     <input type="hidden" name="lang" value="{{ lang }}">
@@ -718,7 +740,8 @@
                             <div class="tank-flags">
                                 {% for n in nation_list %}
                                     {% if n.code == t.nation and n.flag %}
-                                        <img src="{% static n.flag %}" class="nation-flag-inline" alt="">
+                                        <img src="{{ map.image_url }}" class="h-[200px] w-full object-contain bg-black rounded-xl">
+
                                     {% endif %}
                                 {% endfor %}
                             </div>

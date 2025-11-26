@@ -1,0 +1,389 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+.map-detail-page {
+    min-height: calc(100vh - 80px);
+    padding: 32px min(6vw, 72px) 56px;
+    color: #e5e7eb;
+}
+
+.map-detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 28px;
+}
+
+.map-detail-back {
+    margin-bottom: 18px;
+}
+
+.map-detail-back a {
+    color: #22c55e;
+    font-size: 13px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.map-detail-back a:hover {
+    color: #16a34a;
+}
+
+.map-detail-back span.icon {
+    font-size: 14px;
+}
+
+/* Левая колонка: интерактивная миникарта */
+.map-detail-image {
+    position: relative;
+    border-radius: 22px;
+    overflow: hidden;
+    background: #020617;
+    box-shadow:
+      0 24px 50px rgba(15, 23, 42, 0.95),
+      0 0 0 1px rgba(15, 23, 42, 0.7);
+}
+
+/* Переключатель респов */
+.map-spawn-switch {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 10;
+    display: inline-flex;
+    gap: 6px;
+    padding: 4px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.9);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.9);
+}
+
+.map-spawn-btn {
+    border: none;
+    border-radius: 999px;
+    font-size: 11px;
+    padding: 4px 10px;
+    color: #9ca3af;
+    background: transparent;
+    cursor: pointer;
+    transition: background 120ms ease-out, color 120ms ease-out;
+}
+
+.map-spawn-btn.is-active {
+    background: #22c55e;
+    color: #020617;
+}
+
+/* Контейнер картинки */
+.map-detail-image-inner {
+    position: relative;
+}
+
+.map-detail-image-inner img {
+    width: 100%;
+    height: 100%;
+    max-height: 520px;
+    object-fit: cover;
+}
+
+/* Кружочки-точки */
+.map-spot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 2px solid var(--spot-color, #22c55e);
+    background: rgba(15, 23, 42, 0.92);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.9),
+                0 0 22px rgba(34, 197, 94, 0.55);
+    transition: transform 120ms ease-out,
+                box-shadow 120ms ease-out,
+                background 120ms ease-out;
+}
+
+.map-spot:hover {
+    transform: translate(-50%, -50%) scale(1.06);
+    box-shadow: 0 0 0 2px rgba(15, 23, 42, 1),
+                0 0 30px rgba(34, 197, 94, 0.85);
+    background: rgba(15, 23, 42, 1);
+}
+
+.map-spot-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e5e7eb;
+}
+
+/* Подсказка под картой */
+.map-tooltip {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(15, 23, 42, 0.96);
+    border: 1px solid rgba(148, 163, 184, 0.45);
+    font-size: 13px;
+    color: #e5e7eb;
+    min-height: 56px;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 140ms ease-out, transform 140ms ease-out;
+}
+
+.map-tooltip-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #9ca3af;
+    margin-bottom: 4px;
+}
+
+.map-tooltip-text {
+    font-size: 13px;
+    color: #e5e7eb;
+}
+
+/* Правая колонка: карточка с инфой */
+.map-detail-meta-card {
+    background: rgba(15, 23, 42, 0.96);
+    border-radius: 22px;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    padding: 18px 20px 20px;
+    box-shadow:
+      0 20px 45px rgba(15, 23, 42, 0.9),
+      0 0 0 1px rgba(15, 23, 42, 0.7);
+}
+
+.map-detail-title-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.map-detail-name {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.map-detail-badge {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(34, 197, 94, 0.12);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.5);
+}
+
+.map-detail-meta-list {
+    margin: 8px 0 12px;
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+.map-detail-meta-list dt {
+    font-weight: 500;
+    color: #e5e7eb;
+}
+
+.map-detail-meta-list dd {
+    margin: 0 0 6px;
+}
+
+.map-tactics-card {
+    margin-top: 16px;
+    padding: 14px 14px 14px;
+    border-radius: 18px;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px dashed rgba(148, 163, 184, 0.4);
+}
+
+.map-tactics-title {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #9ca3af;
+    margin-bottom: 8px;
+}
+
+.map-tactics-text {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #e5e7eb;
+}
+
+@media (max-width: 900px) {
+    .map-detail-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+</style>
+
+<div class="map-detail-page"
+     data-map-interactive="1"
+     data-slug="{{ map.slug }}"
+     data-lang="{{ lang }}">
+
+    <div class="map-detail-back">
+        <a href="{% url 'maps_list' %}?lang={{ lang }}">
+            <span class="icon">←</span>
+            {% if lang == 'uk' %}
+                Назад до списку карт
+            {% elif lang == 'en' %}
+                Back to map list
+            {% else %}
+                Назад к списку карт
+            {% endif %}
+        </a>
+    </div>
+
+    <div class="map-detail-grid">
+
+        <!-- Левая колонка: интерактивная миникарта -->
+        <section class="map-detail-image">
+
+            <!-- Переключатель респов -->
+            <div class="map-spawn-switch">
+                <button type="button"
+                        class="map-spawn-btn is-active"
+                        data-spawn-switch="a">
+                    {% if lang == 'uk' %}Респ 1{% elif lang == 'en' %}Spawn 1{% else %}Респ 1{% endif %}
+                </button>
+                <button type="button"
+                        class="map-spawn-btn"
+                        data-spawn-switch="b">
+                    {% if lang == 'uk' %}Респ 2{% elif lang == 'en' %}Spawn 2{% else %}Респ 2{% endif %}
+                </button>
+            </div>
+
+            <div class="map-detail-image-inner">
+                <img src="{% static 'maps/' %}{{ map.slug }}.png"
+                     alt="{% if lang == 'ru' %}{{ map.name_ru }}{% elif lang == 'uk' %}{{ map.name_uk|default:map.name_ru }}{% elif lang == 'en' %}{{ map.name_en|default:map.name_ru }}{% else %}{{ map.name_ru }}{% endif %}">
+            </div>
+
+            <div class="map-tooltip">
+                <div class="map-tooltip-title">
+                    {% if lang == 'uk' %}Точка на карті{% elif lang == 'en' %}Map position{% else %}Точка на карте{% endif %}
+                </div>
+                <div class="map-tooltip-text">
+                    {% if lang == 'uk' %}
+                        Наведи або натисни на маркер, щоб побачити опис позиції.
+                    {% elif lang == 'en' %}
+                        Hover or tap a marker to see position description.
+                    {% else %}
+                        Наведи або натисни на маркер, чтобы увидеть описание позиции.
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Правая колонка: информация о карте -->
+        <aside class="map-detail-meta-card">
+
+            <div class="map-detail-title-row">
+                <div class="map-detail-name">
+                    {% if lang == 'ru' %}
+                        {{ map.name_ru }}
+                    {% elif lang == 'uk' %}
+                        {{ map.name_uk|default:map.name_ru }}
+                    {% elif lang == 'en' %}
+                        {{ map.name_en|default:map.name_ru }}
+                    {% else %}
+                        {{ map.name_ru }}
+                    {% endif %}
+                </div>
+
+                <div class="map-detail-badge">
+                    {% if map.layout_type == 'open' %}
+                        {% if lang == 'uk' %}Відкрита{% elif lang == 'en' %}Open{% else %}Открытая{% endif %}
+                    {% elif map.layout_type == 'city' %}
+                        {% if lang == 'uk' %}Міська{% elif lang == 'en' %}City{% else %}Городская{% endif %}
+                    {% elif map.layout_type == 'mixed' %}
+                        {% if lang == 'uk' %}Змішана{% elif lang == 'en' %}Mixed{% else %}Смешанная{% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <dl class="map-detail-meta-list">
+                {% if map.size_m %}
+                    <dt>
+                        {% if lang == 'uk' %}Розмір карти{% elif lang == 'en' %}Map size{% else %}Размер карты{% endif %}
+                    </dt>
+                    <dd>
+                        {% if lang == 'en' %}
+                            {{ map.size_m }} × {{ map.size_m }} m
+                        {% else %}
+                            {{ map.size_m }} × {{ map.size_m }} м
+                        {% endif %}
+                    </dd>
+                {% endif %}
+
+                <dt>
+                    {% if lang == 'uk' %}Сезон{% elif lang == 'en' %}Season{% else %}Сезон{% endif %}
+                </dt>
+                <dd>
+                    {% if map.wg_type == 'summer' %}
+                        {% if lang == 'uk' %}Літня{% elif lang == 'en' %}Summer{% else %}Летняя{% endif %}
+                    {% elif map.wg_type == 'winter' %}
+                        {% if lang == 'uk' %}Зимова{% elif lang == 'en' %}Winter{% else %}Зимняя{% endif %}
+                    {% elif map.wg_type == 'desert' %}
+                        {% if lang == 'uk' %}Піщана{% elif lang == 'en' %}Desert{% else %}Пустынная{% endif %}
+                    {% endif %}
+                </dd>
+
+                {% if map.wg_id %}
+                    <dt>WG ID</dt>
+                    <dd>{{ map.wg_id }}</dd>
+                {% endif %}
+            </dl>
+
+            <div class="map-tactics-card">
+                <div class="map-tactics-title">
+                    {% if lang == 'uk' %}
+                        Базова тактика
+                    {% elif lang == 'en' %}
+                        Basic tactics
+                    {% else %}
+                        Базовая тактика
+                    {% endif %}
+                </div>
+                <div class="map-tactics-text">
+                    {% if lang == 'uk' %}
+                        Тут можна вивести опис тактики для цієї карти: основні напрямки для важких танків,
+                        позиції для середніх та легких, кущі для підсвітів та ключові точки контролю.
+                        <br><br>
+                        Пізніше сюди легко додати автоматичну генерацію тактики на основі обраного танка.
+                    {% elif lang == 'en' %}
+                        Here you can show a tactics description for this map: main lanes for heavy tanks,
+                        positions for mediums and lights, scouting bushes and key control points.
+                        <br><br>
+                        Later you can plug in automatic tactics generation based on the selected tank.
+                    {% else %}
+                        Здесь можно вывести описание тактики для этой карты: основные направления для тяжёлых танков,
+                        позиции для средних и лёгких, кусты для засвета и ключевые точки контроля.
+                        <br><br>
+                        Позже сюда легко добавить автоматическую генерацию тактики на основе выбранного танка.
+                    {% endif %}
+                </div>
+            </div>
+
+        </aside>
+    </div>
+</div>
+
+<!-- Подключаем JS с точками -->
+<script src="{% static 'picker/map_tactics.js' %}"></script>
+
+{% endblock %}

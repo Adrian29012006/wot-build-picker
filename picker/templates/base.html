@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+
+    <title>WoT Build Picker</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Опционально: твой общий css -->
+    <link rel="stylesheet" href="{% static 'picker/style.css' %}">
+
+    <style>
+        body {
+            margin: 0;
+            background: #020617;
+            color: #e5e7eb;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        .navbar {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+            backdrop-filter: blur(12px);
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+        }
+
+        .navbar-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #22c55e;
+            letter-spacing: 0.04em;
+            text-decoration: none;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 18px;
+        }
+
+        .navbar-links a {
+            color: #e5e7eb;
+            text-decoration: none;
+            font-size: 15px;
+            opacity: 0.85;
+            transition: opacity .2s;
+        }
+
+        .navbar-links a:hover {
+            opacity: 1;
+        }
+
+        .page-container {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 20px min(5vw, 40px);
+        }
+
+        footer {
+            margin-top: 40px;
+            padding: 18px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 14px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <a href="{% url 'index' %}" class="navbar-title">
+        WoT Build Picker
+    </a>
+    <nav class="navbar-links">
+        {# Карты #}
+        <a href="{% url 'maps_list' %}">
+            {% if lang == 'uk' %}
+                Карти
+            {% elif lang == 'en' %}
+                Maps
+            {% else %}
+                Карты
+            {% endif %}
+        </a>
+
+        {# Танки / билд-пикер #}
+        <a href="{% url 'index' %}">
+            {% if lang == 'uk' %}
+                Танки
+            {% elif lang == 'en' %}
+                Tanks
+            {% else %}
+                Танки
+            {% endif %}
+        </a>
+
+        <a href="https://worldoftanks.eu/" target="_blank" rel="noopener">
+            World of Tanks
+        </a>
+    </nav>
+</header>
+
+<main class="page-container">
+    {% block content %}
+    {% endblock %}
+</main>
+
+<footer>
+    © {{ now|default:0|date:"Y" }} WoT Build Picker — fan tool for World of Tanks
+</footer>
+
+</body>
+</html>
